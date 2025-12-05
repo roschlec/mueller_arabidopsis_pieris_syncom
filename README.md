@@ -1,6 +1,6 @@
 <p align="left">
 <!-- Zenodo DOI badge -->
-<a href="https://doi.org/INSERT_DOI_HERE"> <img src="https://img.shields.io/badge/DOI-pending-blue.svg" alt="DOI"/> </a>
+<a href="https://10.5281/zenodo.17822324"> <img src="https://img.shields.io/badge/DOI-pending-blue.svg" alt="DOI"/> </a>
 <!-- License badge -->
 <a href="https://github.com/USERNAME/REPO/blob/main/LICENSE"> <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"/> </a>
 <!-- Built with R -->
@@ -21,7 +21,7 @@ This repository includes all the R scripts to reproduce the analysis of the manu
 
 The study investigates how defined synthetic leaf microbial communities influence herbivore feeding outcomes and how herbivory reshapes leaf-associated microbial communities.
 
-All datasets to reproduce the findings of our publication are stored in the associated Zenodo repository. Raw 16S rRNA gene amplicon sequencing data are available in the EMBL-ENI ENA BioProject accession XXX.
+All datasets to reproduce the findings of our publication are stored in the associated <a href="https://10.5281/zenodo.17822324">Zenodo</a> repository. Raw 16S rRNA gene amplicon sequencing data are available in the EMBL-ENI ENA BioProject accession XXX.
 
 ## Repository Structure
 
@@ -64,7 +64,7 @@ mkdir -p data_input/processed
 mkdir -p output
 ```
 
-3.  Download the metadata from Zenodo Visit the Zenodo repository: XXX. Download the dataset archive and extract its contents into the `data_input/` directory.
+3.  Download the datasets and metadata available in <a href="https://10.5281/zenodo.17822324">Zenodo</a>. Download the contents into the `data_input/` directory.
 
 4.  Open RStudio and run the workflow
 
