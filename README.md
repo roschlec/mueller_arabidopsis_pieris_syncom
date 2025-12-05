@@ -52,7 +52,7 @@ All datasets to reproduce the findings of our publication are stored in the asso
 1.  Clone this repository
 
 ```         
-git clone https://github.com/<username>/mueller_arabidopsis_pieris_syncom.git
+git clone https://github.com/relab-fuberlin/mueller_arabidopsis_pieris_syncom.git
 cd mueller_arabidopsis_pieris_syncom
 ```
 
