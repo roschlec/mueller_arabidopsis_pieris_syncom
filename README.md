@@ -10,7 +10,7 @@
 
 <!-- Built with R -->
 
-<img src="https://img.shields.io/badge/R-%3E%3D%204.3.0-blue.svg" alt="R &gt;=4.3"/>
+<img src="https://img.shields.io/badge/R-%3E%3D%204.3.2-blue.svg" alt="R &gt;=4.3"/>
 
 </p>
 
