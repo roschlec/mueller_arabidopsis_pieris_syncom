@@ -76,9 +76,14 @@ plt_figureS <-
 
 # Output ------------------------------------------------------------------
 
-ggsave(plot = plt_figure4,
-       here("output", "Figure4.tiff"), dpi = 300, width = 12, height = 5)
+mapply(function(x) 
+  ggsave(x, 
+         plot = plt_figure4, 
+         dpi = 300, width = 12, height = 5),
+  x = c(here("output", "Figure4.png"), here("output", "Figure4.eps")))
 
-ggsave(plot = plt_figureS,
-       here("output", "FigureShormone.tiff"), dpi = 600, width = 12, height = 4)
-
+#mapply(function(x) 
+#  ggsave(x, 
+#         plot = plt_figureS, 
+#         dpi = 300, width = 12, height = 5),
+#  x=c(here("output", "FigureS_hormone.png"), here("output", "FigureS_hormone.eps")))

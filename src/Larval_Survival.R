@@ -64,7 +64,7 @@ test_mg <-
 
 # Plot --------------------------------------------------------------------
 
-plt_figS1a <-
+plt_figS3a <-
   pot_box_data |> 
   ggplot(aes(x = type, y = Npercent)) +
   stat_summary(fun.data = "mean_cl_boot", colour = "firebrick3") +
@@ -77,7 +77,7 @@ plt_figS1a <-
     axis.text = element_text(colour = "black", size = 12),
     axis.title = element_text(colour = "black", size = 12))
   
-plt_figS1b <-
+plt_figS3b <-
   pot_box_data |> 
   ggplot(aes(x = type, y = meanbiomass_mg)) +
   stat_summary(fun.data = "mean_cl_boot", colour = "firebrick3") +
@@ -90,12 +90,15 @@ plt_figS1b <-
     axis.text = element_text(colour = "black", size = 12),
     axis.title = element_text(colour = "black", size = 12))
 
-plt_figureS1 <-
-  plt_figS1a + plt_figS1b +
+plt_figureS3 <-
+  plt_figS3a + plt_figS3b +
   plot_annotation(tag_levels = "A")
 
 
 # Output ------------------------------------------------------------------
 
-ggsave(plot = plt_figureS1, 
-       here("output", "FigureS1.tiff"), dpi = 600, width = 6, height = 3)
+mapply(function(x) 
+  ggsave(x, 
+         plot = plt_figureS3, 
+         dpi = 300, width = 6, height = 3),
+  x = c(here("output", "FigureS3.png"), here("output", "FigureS3.eps")))

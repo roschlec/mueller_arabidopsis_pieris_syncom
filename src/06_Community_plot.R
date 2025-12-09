@@ -5,6 +5,7 @@ library(here)
 library(tidyverse)
 library(forcats)
 library(ggtext)
+library(cowplot)
 library(colorspace)
 library(patchwork)
 library(ggrepel)
@@ -60,20 +61,21 @@ label_contrast <-
 
 # Plot Relative Abundance -------------------------------------------------
 
-plt_fig6a <-
+plt_fig6a1 <-
   df_syncom20_trt |> 
   # Plot
   ggplot(aes(x = sample, y = freq, fill = fct_reorder(genus_species, -freq))) +
-  facet_wrap(~ sampleType + SynCom + Feeding, nrow = 1, scale = "free_x") +
+  facet_wrap(~ sampleType + Feeding, nrow = 1, scale = "free_x") +
   geom_col(position = "stack", color = "black", linewidth = 0.2) +
   scale_fill_manual(values = c25, labels = sp_label)+
   guides(fill = guide_legend(title = "Genus species", ncol = 2,
                              override.aes = list(stroke = 0))) +
-  scale_y_continuous(limits = c(0, 1.01), expand = c(0, 0)) +
+  scale_y_continuous(lim = c(0, 1.01), expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
   theme_minimal()+
   labs(x = "Replicate", y = "Relative abundance [%]")+
   theme(
+    panel.border = element_rect(fill = NA, linewidth = 0.5),
     text = element_text(size = 12, color = "black"),
     axis.text = element_text(size = 10, color = "black"),
     axis.text.x = element_blank(),
@@ -88,7 +90,21 @@ plt_fig6a <-
     legend.background = element_rect(linewidth = 0.2, colour = "black"),
     legend.box.spacing = unit(1, "mm"))
 
+plt_fig6a <-
+  ggdraw(plt_fig6a1) + 
+  draw_label("Sample Type", x = 0.73, y = 0.94, size = 10, hjust = 0) +
+  draw_label("Feeding", x = 0.73, y = 0.87, size = 10, hjust = 0)
+
 # Plot NMDS ---------------------------------------------------------------
+
+nmds_fit <- 
+  nmds_fit |> 
+  mutate(strain_label = case_when(
+    species == "eucalypti" ~ "299R",
+    species == "melonis" ~ "FR1",
+    species == "radiotolerans" ~ "0-1",
+    TRUE ~ species
+  ))
 
 plt_fig6b <-
   nmds_df |> 
@@ -96,19 +112,23 @@ plt_fig6b <-
   geom_point(aes(NMDS1, NMDS2, fill = Condition), 
              size = 3, stroke = 0.5, pch = 21) +
   geom_segment(data = nmds_fit, 
-               aes(x = 0, xend = NMDS1, y = 0, yend = NMDS2),
+               aes(x = 0, xend = 0.5*NMDS1, y = 0, yend = 0.5*NMDS2),
                arrow = grid::arrow(angle = 20, length = unit(0.2, "cm")),
                alpha = 0.5) +
-  geom_richtext(data = nmds_fit, aes(x = NMDS1, y = NMDS2, label = sp_label),
-               fill = NA, label.color = NA, size = 3,
-               position = position_nudge_center(0.3, 0.01, 0, 0)) +
+  geom_text_repel(data = nmds_fit, aes(x = 0.5*NMDS1, y = 0.5*NMDS2, label = strain_label),
+                  xlim = c(NA, Inf),
+                  ylim = c(-Inf, Inf),
+                  seed = 41, 
+                  box.padding = 0.3,
+                  min.segment.length = Inf, size = 3) +
   theme_bw() +
+  lims(x = c(-1, 1.3), y = c(-0.9, 1)) +
   scale_fill_discrete_qualitative(palette = "Dark3",
                                   labels = c("Larvae",
                                              "Leaf + Feeding",
                                              "Leaf - Feeding")) +
   theme(
-    text = element_text(size = 12, color = "black"),
+    panel.border = element_rect(fill = NA, linewidth = 0.5),
     axis.ticks.y = element_line(colour = "black", linewidth = 0.5),
     legend.position.inside = c(0.8, 0.2),
     legend.key.spacing.y = unit(0.1, "mm"),
@@ -123,38 +143,58 @@ plt_fig6b <-
 # Plot Differential Abundance ---------------------------------------------
 
 plt_fig6c <-
-  diff |> 
+  diff |>
   mutate(Contrast = factor(Contrast, 
-                           levels = c("contrast_feeding", "contrast_larva_fedLeaf", "contrast_larva_nonfedLeaf"))) |> 
+                           levels = c("contrast_feeding", 
+                                      "contrast_larva_fedLeaf", 
+                                      "contrast_larva_nonfedLeaf"))) |> 
+  mutate(
+    label_contrast1 = case_when(
+      Contrast == "contrast_feeding" ~ "Leaf - Feeding",
+      Contrast == "contrast_larva_fedLeaf" ~ "Leaf + Feeding",
+      Contrast == "contrast_larva_nonfedLeaf" ~ "Leaf - Feeding"),
+    label_contrast2 = case_when(
+      Contrast == "contrast_feeding" ~ "Leaf + Feeding",
+      Contrast == "contrast_larva_fedLeaf" ~ "Larvae",
+      Contrast == "contrast_larva_nonfedLeaf" ~ "Larvae")
+  ) |>
   ggplot(aes(x = log2FoldChange, 
              y = fct_reorder(genus_species, log2FoldChange), 
-             alpha = padj)) +
+             fill = padj)) +
   facet_wrap(~Contrast,
              labeller = labeller(Contrast = label_contrast)) +
+  geom_segment(aes(xend = 0), linewidth = 0.5)+
   geom_vline(xintercept = 0) + 
-  geom_point(size = 2.5) +
-  geom_segment(aes(xend = 0), linewidth = 1)+
-  guides(colour = "none",
-         alpha = guide_legend(title = expression(paste(italic("P"), "-adjusted")),
-                              override.aes = list(linewidth = 0))) +
-  scale_alpha_continuous(range = c(1, 0.2), 
-                         breaks = c(0.001, 0.05, 0.5, 1),
-                         labels = c("<0.001", "0.05", "0.5", "1.0")) +
+  geom_point(size = 2.5, pch = 21) +
+  geom_text(aes(x = -6, y = 20, label = label_contrast1), 
+            colour = "black", alpha = 1, vjust = "center", hjust = "center", size = 3, check_overlap = TRUE) +
+  geom_text(aes(x = 6, y = 20, label = label_contrast2), 
+            colour = "black", alpha = 1, vjust = "center", hjust = "center", size = 3, check_overlap = TRUE) +
+  coord_cartesian(ylim = c(1,20), clip = "off") +
+  guides(fill = guide_colourbar(title = expression(paste(italic("P"), "-adjusted")))) +
+  scale_fill_continuous_sequential(palette = "Grays", 
+                                     begin = 1,
+                                     end = 0,
+                                     breaks = c(0.05, 0.5, 1.0),
+                                     labels = c("0.05", "0.5", "1.0")) +
   scale_y_discrete(name = NULL, labels = sp_label) + 
   scale_x_continuous(name = expression(paste("Relative abundance (",log[2], "FC)")),
-                     limits = c(-11, 9), breaks = seq(-8, 9, 4)) +
+                     limits = c(-12, 12), breaks = seq(-8, 9, 4)) +
   theme_bw() +
   theme(
+    panel.border = element_rect(fill = NA, linewidth = 0.3),
     text = element_text(size = 12, color = "black"),
-    axis.text.y = element_markdown(size = 9),
+    axis.text.y = element_markdown(size = 9, colour = "black"),
     strip.background = element_blank(),
+    strip.text = element_blank(),
     legend.key.spacing.y = unit(0.1, "mm"),
     legend.key.size = unit(4, "mm"),
     legend.title = element_text(size = 10),
     legend.text = element_text(size = 8),
     legend.background = element_rect(linewidth = 0.2, colour = "black"),
-    legend.box.spacing = unit(1, "mm"),
-    legend.position = "bottom"
+    legend.box.spacing = unit(5, "mm"),
+    legend.position = "bottom",
+    legend.margin = margin(t = 5, r = 15, b = 5, l = 10)
   )
 
 # Combine plots -----------------------------------------------------------
@@ -166,5 +206,8 @@ plt_fig6 <-
 
 # Output ------------------------------------------------------------------
 
-ggsave(plot = plt_fig6,
-  here('output', 'figure6.pdf'), dpi = 600, width = 15, height = 9)
+mapply(function(x) 
+  ggsave(x, 
+         plot = plt_fig6, 
+         dpi = 300, width = 15, height = 8),
+  x = c(here("output", "Figure6.png"), here("output", "Figure6.eps")))

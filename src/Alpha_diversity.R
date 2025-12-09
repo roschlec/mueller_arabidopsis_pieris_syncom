@@ -43,10 +43,10 @@ keep_samples <-
   filter(n_seqs >= 300) |> 
   pull(sample)
 
-filter_df <- t(data[, keep_samples])
+filter_df <- t(syncom20.df[, keep_samples])
 
 min_seq <- 
-  data[, keep_samples] |> 
+  syncom20.df[, keep_samples] |> 
   pivot_longer(everything(), names_to = "sample") |> 
   group_by(sample) |> 
   summarise(n_seqs = sum(value)) |> 
@@ -236,5 +236,8 @@ plt_figure7 <-
 
 # Output ------------------------------------------------------------------
 
-ggsave(plot = plt_figure7,
-       here("output", "Figure7.tiff"), dpi = 300, width = 10, height = 4)
+mapply(function(x) 
+  ggsave(x, 
+         plot = plt_figure7, 
+         dpi = 300, width = 10, height = 4),
+  x = c(here("output", "Figure7.png"), here("output", "Figure7.eps")))

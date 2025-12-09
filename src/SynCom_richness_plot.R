@@ -111,7 +111,7 @@ plt_figure3 <-
 ## Supplemental
 
 # Correlation richness and normalised larval weight
-plt_figureS3a <-
+plt_figureS4a <-
   plot_corr(weight, BacRichness, treatment) +
   labs(x = "Richness") +
   scale_fill_manual(labels = c("Control", "SynCom5", "SynCom10", "SynCom20"),
@@ -119,36 +119,42 @@ plt_figureS3a <-
   
 
 # Correlation Faith's PD and normalised larval weight
-plt_figureS3b <-
+plt_figureS4b <-
   plot_corr(weight, FaithsPD, treatment) +
   labs(x = "Faith's PD")+
   scale_fill_manual(labels = c("Control", "SynCom5", "SynCom10", "SynCom20"),
                     values = c("indianred1","forestgreen","purple","dodgerblue"))
 
 # Correlation Larval weight and CFU in larvae
-plt_figureS3c <-
+plt_figureS4c <-
   plot_corr(weight_onlySynCom, loglarvaecfu, treatment) + 
   labs(x = expression(paste(Log[10], " CFU/g leaf"))) +
   scale_fill_manual(labels = c("SynCom5", "SynCom10", "SynCom20"), 
                     values = c("forestgreen","purple","dodgerblue"))
 
 # Correlation Larval weight and CFU on leaves
-plt_figureS3d <-
+plt_figureS4d <-
   plot_corr(weight_onlySynCom, logleafcfu, treatment) + 
   labs(x = expression(paste(Log[10], " CFU/g larva"))) +
   scale_fill_manual(labels = c("SynCom5", "SynCom10", "SynCom20"), 
                     values = c("forestgreen","purple","dodgerblue"))
 
-plt_figureS3 <-
-  (plt_figureS3a + plt_figureS3b + plt_figureS3c + plt_figureS3d) +
+plt_figureS4 <-
+  (plt_figureS4a + plt_figureS4b + plt_figureS4c + plt_figureS4d) +
   plot_layout(ncol = 4) +
   plot_annotation(tag_levels = "A") &
   labs(y = "Normalised larval weight")
 
 # Output ------------------------------------------------------------------
 
-ggsave(plot = plt_figure3,
-       here("output", "Figure3.tiff"), dpi = 600, width = 12, height = 3.5)
+mapply(function(x) 
+  ggsave(x, 
+         plot = plt_figure3, 
+         dpi = 300, width = 12, height = 3.5),
+  x = c(here("output", "Figure3.png"), here("output", "Figure3.eps")))
 
-ggsave(plot = plt_figureS3,
-       here("output", "FigureS3.tiff"), dpi = 600, width = 12, height = 3)
+mapply(function(x) 
+  ggsave(x, 
+         plot = plt_figureS4, 
+         dpi = 300, width = 12, height = 3.5),
+  x = c(here("output", "FigureS4.png"), here("output", "FigureS4.eps")))

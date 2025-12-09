@@ -106,5 +106,8 @@ plt_fig5 <-
 
 # Output ------------------------------------------------------------------
 
-ggsave(plot = plt_fig5, 
-       here("output", "figure5.tiff"), dpi = 600, width = 6, height = 3)
+mapply(function(x) 
+  ggsave(x, 
+         plot = plt_fig5, 
+         dpi = 300, width = 6, height = 3),
+  x = c(here("output", "Figure5.png"), here("output", "Figure5.eps")))

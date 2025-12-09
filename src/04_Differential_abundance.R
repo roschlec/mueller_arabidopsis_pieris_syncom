@@ -62,9 +62,9 @@ dds <- estimateSizeFactors(dds, type = "poscounts")
 dds <- DESeq(dds)
 
 # Define contrasts
-contrast_feeding <- c("Condition", "leaf_noSynCom_Feeding", "leaf_noSynCom_noFeeding")
-contrast_larva_fedLeaf <- c("Condition", "larvae_SynCom_Feeding", "leaf_noSynCom_Feeding")
-contrast_larva_nonfedLeaf <- c("Condition", "larvae_SynCom_Feeding", "leaf_noSynCom_noFeeding")
+contrast_feeding <- c("Condition", "leaf_SynCom_Feeding", "leaf_SynCom_noFeeding")
+contrast_larva_fedLeaf <- c("Condition", "larvae_SynCom_Feeding", "leaf_SynCom_Feeding")
+contrast_larva_nonfedLeaf <- c("Condition", "larvae_SynCom_Feeding", "leaf_SynCom_noFeeding")
 
 list_contrasts <- list(contrast_feeding, 
                        contrast_larva_fedLeaf, 

@@ -7,9 +7,8 @@
 library(here)
 library(tidyverse)
 library(patchwork)
-
 library(car)
-library(lme4)
+library(glmmTMB)
 library(emmeans)
 library(multcompView)
 
@@ -37,9 +36,9 @@ phytohormone_T1 <-
 # Jasmonic Acid (JA) ------------------------------------------------------
 
 # Model
-JA_lme <- glmer(normJAfw ~ fed * inoculated + (1|run),
-              family = Gamma,
-              data = phytohormone_T1)
+JA_lme <- glmmTMB(normJAfw ~ fed * inoculated + (1|run),
+                family = Gamma(link = "log"),
+                data = phytohormone_T1)
 
 # Residuals
 qqnorm(resid(JA_lme))
@@ -69,9 +68,9 @@ cld_ja <-
 
 # JA-Ile ------------------------------------------------------------------
 # Model
-JAile_lme <- glmer(normJAilefw ~ fed * inoculated + (1|run),
-                   family = Gamma,
-                   data = phytohormone_T1)
+JAile_lme <- glmmTMB(normJAilefw ~ fed * inoculated + (1|run),
+                     family = Gamma(link = "log"),
+                     data = phytohormone_T1)
 
 # Residuals
 qqnorm(resid(JAile_lme))
@@ -95,9 +94,9 @@ cld_jaile <-
 
 # Abscisic acid (ABA) -----------------------------------------------------
 # Model
-ABA_lme <- glmer(normABAfw ~ fed * inoculated + (1|run),
-                 family = Gamma,
-                 data = phytohormone_T1)
+ABA_lme <- glmmTMB(normABAfw ~ fed * inoculated + (1|run),
+                   family = Gamma(link = "log"),
+                   data = phytohormone_T1)
 
 # Residuals
 qqnorm(resid(ABA_lme))
@@ -121,9 +120,9 @@ cld_aba <-
 
 # Salicylic acid (SA) -----------------------------------------------------
 # Model
-SA_lme <- glmer(normSAfw ~ fed * inoculated + (1|run),
-                family = Gamma,
-                data = phytohormone_T1)
+SA_lme <- glmmTMB(normSAfw ~ fed * inoculated + (1|run),
+                  family = Gamma(link = "log"),
+                  data = phytohormone_T1)
 
 # Residuals
 qqnorm(resid(SA_lme))

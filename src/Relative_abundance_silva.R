@@ -5,7 +5,9 @@
 # Libraries ---------------------------------------------------------------
 library(here)
 library(tidyverse)
+library(phyloseq)
 library(forcats)
+library(cowplot)
 library(patchwork)
 
 # Data Input --------------------------------------------------------------
@@ -185,7 +187,31 @@ plt <-
     strip.text = element_text(size = 12),
     strip.background = element_rect(linewidth = 0.8, color = "black"))
 
-# Save --------------------------------------------------------------------
-ggsave(plot = plt, 
-       here("output", "figureS4.tiff"), dpi = 300, height = 10, width = 15)
+x_lab <- 0.915
+y_A <- 0.96
+y_B <- 0.63
+y_C <- 0.3
+y_dec <- 0.025
 
+plt_figureS2 <- 
+  ggdraw(plt) +
+    # PLOT A
+  draw_label("Sample Type", x = x_lab, y = y_A, size = 10, hjust = 0) +
+  draw_label("SynCom", x = x_lab, y = y_A - y_dec, size = 10, hjust = 0) +
+  draw_label("Feeding", x = x_lab, y = y_A - y_dec*2, size = 10, hjust = 0) +
+    # PLOT B
+  draw_label("Sample Type", x = x_lab, y = y_B, size = 10, hjust = 0) +
+  draw_label("SynCom", x = x_lab, y = y_B - y_dec, size = 10, hjust = 0) +
+  draw_label("Feeding", x = x_lab, y = y_B - y_dec*2, size = 10, hjust = 0) +
+    # PLOT C
+  draw_label("Sample Type", x = x_lab, y = y_C, size = 10, hjust = 0) +
+  draw_label("SynCom", x = x_lab, y = y_C - y_dec, size = 10, hjust = 0) +
+  draw_label("Feeding", x = x_lab, y = y_C - y_dec *2, size = 10, hjust = 0)
+
+# Save --------------------------------------------------------------------
+
+mapply(function(x) 
+  ggsave(x, 
+         plot = plt_figureS2, 
+         dpi = 300, height = 11, width = 15),
+  x = c(here("output", "FigureS2.png"), here("output", "FigureS2.eps")))

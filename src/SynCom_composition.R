@@ -43,7 +43,7 @@ syncom.df <- read.csv(here("input", "syncom_composition.csv"))
 
 # Plot --------------------------------------------------------------------
 
-plt_figureS2 <-
+plt_figureS1 <-
   syncom.df |> 
   mutate(present = 1) |> 
   pivot_wider(id_cols = c(experiment, SynCom), 
@@ -62,7 +62,7 @@ plt_figureS2 <-
   theme(
     panel.background = element_blank(),
     strip.background = element_blank(),
-    axis.text = element_text(size = 11),
+    axis.text = element_text(size = 8),
     axis.text.y = element_markdown(),
     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
     axis.title = element_blank(),
@@ -70,5 +70,8 @@ plt_figureS2 <-
 
 # Output ------------------------------------------------------------------
 
-ggsave(plot = plt_figureS2,
-       here("output", "FigureS2.tiff"), dpi = 600, width = 8, height = 4)
+mapply(function(x) 
+  ggsave(x, 
+         plot = plt_figureS1, 
+         dpi = 300, width = 8, height = 3),
+  x = c(here("output", "FigureS1.png"), here("output", "FigureS1.eps")))

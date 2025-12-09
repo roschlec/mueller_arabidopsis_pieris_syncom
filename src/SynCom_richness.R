@@ -43,16 +43,6 @@ glm_survival <- glmmTMB(cbind(Nlarvae, initial - Nlarvae) ~ treatment + (1|exper
 # Model evaluation (ANOVA)
 Anova(glm_survival)
 
-# Marginal means (per treatment)
-emm_survival <- emmeans(glm_survival, ~ treatment)
-
-# Pairwise comparisons with BH adjustment
-pairs(emm_survival, adjust = "BH")
-
-# Compact letter display
-cld_survival <- 
-  multcomp::cld(emm_survival, adjust = "BH", Letters = letters, alpha = 0.05) |> 
-  mutate(.group = str_remove_all(.group, " "))
 
 # CFU on Leaves -----------------------------------------------------------
 # Shapiro-Wilk Normality Test 
@@ -60,17 +50,10 @@ weight |>
   group_by(experiment_rep) |> 
   shapiro_test(logleafcfu)
 
-# Kruskal-Wallis
-weight |> 
+# Levene Test for Homogeneity of Variances
+weight |>
   group_by(experiment_rep) |> 
-  kruskal_test(logleafcfu ~ treatment)
-
-# Dunn's post-hoc test
-weight |> 
-  group_by(experiment_rep) |> 
-  dunn_test(logleafcfu ~ treatment, p.adjust.method = "BH") |> 
-  filter(p.adj.signif < 0.05) |> 
-  arrange(group1, group2)
+  levene_test(logleafcfu ~ treatment)
 
 # Regression Model
 # Linear mixed-effect model
@@ -124,10 +107,6 @@ cld_lvcfu <-
 
 # Larval Weight -----------------------------------------------------------
 # Model
-LM_lvweigth_trt <-
-  lm(weightperlarva ~ treatment * experiment_rep,
-     data = weight)
-
 model_lvweight_trt <- 
   lme(weightperlarva ~ treatment,
       random = ~ 1 | experiment_rep,
