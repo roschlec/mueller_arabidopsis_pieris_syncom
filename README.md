@@ -96,16 +96,17 @@ source("src/Alpha_diversity.R")
 To recreate the supplementary material:
 ```
 # Figure S1
-source("src/Larval_Survival.R")
-
-# Figure S2
 source("src/SynCom_composition.R")
 
+# Figure S2
+source("src/Relative_abundance_silva.R")
+
 # Figure S3
-# Generated from main Figure 3 scripts
+source("src/Larval_Survival.R")
 
 # Figure S4
-source("src/Relative_abundance_silva.R")
+# Generated from main Figure 3 scripts
+
 ```
 
 Figures and processed outputs will be saved automatically into the `output/` directory.
