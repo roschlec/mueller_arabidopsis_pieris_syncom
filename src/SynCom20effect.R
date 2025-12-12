@@ -5,15 +5,16 @@
 # Libraries ---------------------------------------------------------------
 library(here)
 library(tidyverse)
+library(rstatix)
+library(ggpubr)
+library(patchwork)
 
 # Data input --------------------------------------------------------------
 
 larval_weight <-
-  read_delim(here("input", "larval_weight_syncom20.txt"), 
-             delim = "\t", show_col_types = FALSE)
+  read_delim(here("input", "larval_weight_syncom20.txt"), delim = "\t", show_col_types = FALSE)
   
-cfu <- read_delim(here("input", "syncom20_leaf.txt"), 
-                  delim = "\t", show_col_types = FALSE)
+cfu <- read_delim(here("input", "syncom20_leaf.txt"), delim = "\t", show_col_types = FALSE)
 
 # Stats -------------------------------------------------------------------
 # Larval weight
